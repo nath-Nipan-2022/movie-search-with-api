@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect, useCallback } from "react";
+import "./App.css";
 
-function App() {
+import SearchBar from "./components/SearchBar";
+import MovieCard from "./components/MovieCard";
+import Skeletons from "./components/Skeletons";
+import { useFetch } from "./hook/useFetch";
+
+const App = () => {
+  const [search, setSearch] = useState("spider man");
+  const { data: movies, isLoading, error } = useFetch(search);
+
+  const handleSearch = (term) => {
+    setSearch(term);
+  };
+
+  const renderMovies = movies.map((movie) => {
+    return <MovieCard key={movie.show.id} show={movie.show} />;
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div className="container">
+      <h1 className="heading">MovieLand</h1>
+      <header>
+        <SearchBar handleSearch={handleSearch} />
       </header>
+
+      <main>
+        <div className="movies_container">
+          {isLoading ? <Skeletons times={10} /> : renderMovies}
+        </div>
+
+        {error && (
+          <div className="error-message">
+            <div>{error}</div>;
+          </div>
+        )}
+      </main>
     </div>
   );
-}
+};
 
 export default App;
