@@ -5,7 +5,7 @@ const MovieCard = ({ show: movie }) => {
   const { image, name, premiered, rating, genres } = movie;
 
   return (
-    <article className="movie_card">
+    <a className="movie_card" href={movie.id}>
       <figure>
         <img
           src={image ? image.medium : placeholder}
@@ -30,7 +30,7 @@ const MovieCard = ({ show: movie }) => {
           </h3>
         </div>
       </article>
-    </article>
+    </a>
   );
 };
 

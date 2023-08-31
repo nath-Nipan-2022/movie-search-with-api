@@ -1,21 +1,30 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
 import SearchBar from "./components/SearchBar";
 import MovieCard from "./components/MovieCard";
 import Skeletons from "./components/Skeletons";
 import { useFetch } from "./hook/useFetch";
+import { tvMazeApi_Base_Url } from "./tvMazeApi";
 
 const App = () => {
-  const [search, setSearch] = useState("spider man");
-  const { data: movies, isLoading, error } = useFetch(search);
+  const [search, setSearch] = useState("");
+
+  let url = tvMazeApi_Base_Url + "shows";
+  if (search) {
+    url = tvMazeApi_Base_Url + "search/shows?q=" + search;
+  }
+
+  const { data: movies, isLoading, error } = useFetch(url);
 
   const handleSearch = (term) => {
     setSearch(term);
   };
 
   const renderMovies = movies.map((movie) => {
-    return <MovieCard key={movie.show.id} show={movie.show} />;
+    return (
+      <MovieCard key={movie.id || movie.show.id} show={movie.show || movie} />
+    );
   });
 
   return (
@@ -29,12 +38,6 @@ const App = () => {
         <div className="movies_container">
           {isLoading ? <Skeletons times={10} /> : renderMovies}
         </div>
-
-        {error && (
-          <div className="error-message">
-            <div>{error}</div>;
-          </div>
-        )}
       </main>
     </div>
   );

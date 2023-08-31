@@ -1,33 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
 
-export const useFetch = (query) => {
-  const url = `https://api.tvmaze.com/search/shows?q=`;
-
+export const useFetch = (url) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const fetchMovies = useCallback(
-    async (query) => {
-      try {
-        setIsLoading(true);
-        const res = await fetch(`${url}${query}`);
-        const data = await res.json();
+  const fetchMovies = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetch(`${url}`);
+      const data = await res.json();
 
-        console.log(data);
-        setIsLoading(false);
-        setData(data);
-      } catch (e) {
-        console.log(e.message);
-        setError(e.message);
-      }
-    },
-    [url]
-  );
+      console.log(data.slice(0, 45));
+      setIsLoading(false);
+      setData(data.slice(0, 45));
+    } catch (e) {
+      console.log(e.message);
+      setError(e.message);
+    }
+  }, [url]);
 
   useEffect(() => {
-    fetchMovies(query);
-  }, [fetchMovies, query]);
+    fetchMovies(url);
+  }, [fetchMovies, url]);
 
   return {
     isLoading,
